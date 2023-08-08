@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tenantapp-NAMESPACE
+spec:
+  destination:
+    namespace: NAMESPACE
+    server: https://kubernetes.default.svc
+  project: NAMESPACE
+  source:
+    - chart: postgres
+      path: namespaced/helm/postgres
+      repoURL: MAIN-GIT
+      targetRevision: HEAD
+      helm:
+        valuesObject:
+          postgres:
+            password: PG_RANDOM_PASSWORD
+            imageversion: POSTGRES_IMAGE_VERSION
+            storage: STORAGE_CAPACITY
+            namespace: NAMESPACE
+    - chart: odoo
+      path: namespaced/helm/odoo
+      repoURL: MAIN-GIT
+      targetRevision: HEAD
+      helm:
+        valuesObject:
+          postgres:
+            password: PG_RANDOM_PASSWORD
+            imageversion: POSTGRES_IMAGE_VERSION
+            storage: STORAGE_CAPACITY
+            namespace: NAMESPACE
+          odoo: 
+            imageversion: ODOO_IMAGE_VERSION
+            subdomain: SUBDOMAIN
+            domain: DOMAINNAME

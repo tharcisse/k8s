@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tenantaddons-NAMESPACE
+spec:
+  destination:
+    namespace: NAMESPACE
+    server: https://kubernetes.default.svc
+  project: NAMESPACE
+  source:
+    path: /
+    repoURL: TENANT-ADDONS-GIT
+    targetRevision: HEAD

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo-deployment
+  labels:
+    app: odoo
+  namespace: NAMESPACE
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo
+  template:
+    metadata:
+      labels:
+        app: odoo
+    spec:
+      volumes:
+      - name: odooaddons
+        hostPath:
+          path: /odoo/addons/NAMESPACE  
+      containers:
+      - name: odoo
+        image: ODOO_IMAGE_VERSION
+        volumeMounts:
+        - name: odooaddons
+          mountPath: /mnt/extra-addons
+        ports:
+        - containerPort: 8069
+        command: ["[ -e /mnt/extra-addons/requirements.txt ] && pip3"]
+        args : ["install","-r", "/mnt/extra-addons/requirements.txt"]
+        env:
+        - name: HOST
+          value: postgres-service.NAMESPACE.svc
+        - name: USER
+          value: odoo
+        - name: PASSWORD
+          value: PG_RANDOM_PASSWORD
